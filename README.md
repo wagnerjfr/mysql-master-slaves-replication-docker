@@ -1,4 +1,4 @@
-# MySQL Replication with Docker MySQL Images
+# Replication with Docker MySQL Images
 Setting up MySQL Replication M->S1 and M->S2 with Docker MySQL images
 
 #### Replication enables data from one MySQL database server (the master) to be copied to one or more MySQL database servers (the slaves).
@@ -63,7 +63,7 @@ docker run -d --rm --name=slave2 --net=replicanet --hostname=slave2 \
 ```
 Now we’re ready start our instances and configure replication.
 
-Launch the master node, configure the replication user and get the initial replication co-ordinates
+Let's configure in **master node** the replication user and get the initial replication co-ordinates
 
 ```
 docker exec -it master mysql -uroot -pmypass \
@@ -85,8 +85,8 @@ mysql: [Warning] Using a password on the command line interface can be insecure.
 +--------------------+----------+--------------+------------------+-------------------+
 ```
 
-Let’s continue with the slave instance.  Set the replication co-ordinates captured in the previous step,
-before running the below command.
+Let’s continue with the slave instance. Change (if different) the replication co-ordinates captured in the previous step:
+**MASTER_LOG_FILE='mysql-bin-1.000003'**, **MASTER_LOG_POS=595**, before running the below command.
 
 ```
 for N in 1 2
@@ -131,7 +131,8 @@ Slave2 output:
 ...
 ```
 
-Now it's time to test whether data are replicated to slaves.
+Now it's time to test whether data is replicated to slaves.
+We are going to create a new database named "TEST" in master.
 ```
 docker exec -it master mysql -uroot -pmypass -e"CREATE DATABASE TEST; USE TEST; SHOW DATABASES;"
 
