@@ -149,7 +149,23 @@ Now it's time to test whether data is replicated to slaves.
 We are going to create a new database named "TEST" in master.
 ```
 docker exec -it master mysql -uroot -pmypass -e"CREATE DATABASE TEST; USE TEST; SHOW DATABASES;"
+```
+Output:
+```
+mysql: [Warning] Using a password on the command line interface can be insecure.
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| TEST               |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+```
 
+Run the code below to check whether the database was replicated.
+```
 for N in 1 2
   do docker exec -it slave$N mysql -uroot -pmypass \
   -e "SHOW VARIABLES WHERE Variable_name = 'hostname';" \
