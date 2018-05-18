@@ -153,7 +153,7 @@ docker exec -it master mysql -uroot -pmypass -e"CREATE DATABASE TEST; USE TEST; 
 for N in 1 2
   do docker exec -it slave$N mysql -uroot -pmypass \
   -e "SHOW VARIABLES WHERE Variable_name = 'hostname';" \
-  -e"SHOW DATABASES;"
+  -e "SHOW DATABASES;"
 done
 ```
 Output:
