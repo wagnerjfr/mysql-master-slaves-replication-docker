@@ -61,6 +61,24 @@ docker run -d --rm --name=slave2 --net=replicanet --hostname=slave2 \
   mysql/mysql-server:5.7 \
   --server-id=3
 ```
+It's possible to see whether the containers are started by running:
+```
+docker ps -a
+```
+```
+CONTAINER ID        IMAGE                    COMMAND                  CREATED             STATUS                            PORTS                 NAMES
+b2b855652b3b        mysql/mysql-server:5.7   "/entrypoint.sh --se…"   3 seconds ago       Up 3 seconds (health: starting)   3306/tcp, 33060/tcp   slave2
+8a10c0c92350        mysql/mysql-server:5.7   "/entrypoint.sh --se…"   7 seconds ago       Up 5 seconds (health: starting)   3306/tcp, 33060/tcp   slave1
+8f8ceffd4580        mysql/mysql-server:5.7   "/entrypoint.sh --se…"   7 seconds ago       Up 7 seconds (health: starting)   3306/tcp, 33060/tcp   master
+```
+Servers are still with status **(health: starting)**, wait till they are with state **(healthy)** before running the following commands.
+```
+CONTAINER ID        IMAGE                    COMMAND                  CREATED             STATUS                    PORTS                 NAMES
+b2b855652b3b        mysql/mysql-server:5.7   "/entrypoint.sh --se…"   30 seconds ago      Up 30 seconds (healthy)   3306/tcp, 33060/tcp   slave2
+8a10c0c92350        mysql/mysql-server:5.7   "/entrypoint.sh --se…"   34 seconds ago      Up 32 seconds (healthy)   3306/tcp, 33060/tcp   slave1
+8f8ceffd4580        mysql/mysql-server:5.7   "/entrypoint.sh --se…"   34 seconds ago      Up 34 seconds (healthy)   3306/tcp, 33060/tcp   master
+```
+
 Now we’re ready start our instances and configure replication.
 
 Let's configure in **master node** the replication user and get the initial replication co-ordinates
@@ -73,10 +91,6 @@ docker exec -it master mysql -uroot -pmypass \
 ```
 Output:
 ```
-wfranchi@computer:~$ docker exec -it master mysql -uroot -pmypass \
->   -e"CREATE USER 'repl'@'%' IDENTIFIED BY 'slavepass';" \
->   -e"GRANT REPLICATION SLAVE ON *.* TO 'repl'@'%';" \
->   -e"SHOW MASTER STATUS;"
 mysql: [Warning] Using a password on the command line interface can be insecure.
 +--------------------+----------+--------------+------------------+-------------------+
 | File               | Position | Binlog_Do_DB | Binlog_Ignore_DB | Executed_Gtid_Set |
@@ -144,11 +158,6 @@ done
 ```
 Output:
 ```
-wfranchi@computer:~$ for N in 1 2
->   do docker exec -it slave$N mysql -uroot -pmypass \
->   -e "SHOW VARIABLES WHERE Variable_name = 'hostname';" \
->   -e"SHOW DATABASES;"
-> done
 mysql: [Warning] Using a password on the command line interface can be insecure.
 +---------------+--------+
 | Variable_name | Value  |
