@@ -18,8 +18,8 @@ We start by creating a Docker network named **replicanet**, then we are going to
 ## Pull MySQL Sever Image
 
 To download the MySQL Community Edition image, the command is:
-```
-docker pull mysql/mysql-server:tag
+```console
+$ docker pull mysql/mysql-server:tag
 ```
 If :tag is omitted, the latest tag is used, and the image for the latest GA version of MySQL Server is downloaded.
 
@@ -32,47 +32,47 @@ docker pull mysql/mysql-server:8.0
 In this example, we are going to use ***mysql/mysql-server:8.0***
 
 ## Creating a Docker network
-```
-docker network create replicanet
+```console
+$ docker network create replicanet
 ```
 Just need to create it once, unless you remove it from docker network.
 
 To see all Docker Network:
-```
-docker network ls
+```console
+$ docker network ls
 ```
 ## Creating 3 MySQL 8 containers
 
 Run the commands below in a terminal.
-```
-docker run -d --rm --name=master --net=replicanet --hostname=master \
+```console
+$ docker run -d --rm --name=master --net=replicanet --hostname=master \
   -v $PWD/d0:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=mypass \
   mysql/mysql-server:5.7 \
   --server-id=1 \
   --log-bin='mysql-bin-1.log'
 
-docker run -d --rm --name=slave1 --net=replicanet --hostname=slave1 \
+$ docker run -d --rm --name=slave1 --net=replicanet --hostname=slave1 \
   -v $PWD/d1:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=mypass \
   mysql/mysql-server:5.7 \
   --server-id=2
 
-docker run -d --rm --name=slave2 --net=replicanet --hostname=slave2 \
+$ docker run -d --rm --name=slave2 --net=replicanet --hostname=slave2 \
   -v $PWD/d2:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=mypass \
   mysql/mysql-server:5.7 \
   --server-id=3
 ```
 It's possible to see whether the containers are started by running:
+```console
+$ docker ps -a
 ```
-docker ps -a
-```
-```
+```console
 CONTAINER ID        IMAGE                    COMMAND                  CREATED             STATUS                            PORTS                 NAMES
 b2b855652b3b        mysql/mysql-server:5.7   "/entrypoint.sh --se…"   3 seconds ago       Up 3 seconds (health: starting)   3306/tcp, 33060/tcp   slave2
 8a10c0c92350        mysql/mysql-server:5.7   "/entrypoint.sh --se…"   7 seconds ago       Up 5 seconds (health: starting)   3306/tcp, 33060/tcp   slave1
 8f8ceffd4580        mysql/mysql-server:5.7   "/entrypoint.sh --se…"   7 seconds ago       Up 7 seconds (health: starting)   3306/tcp, 33060/tcp   master
 ```
 Servers are still with status **(health: starting)**, wait till they are with state **(healthy)** before running the following commands.
-```
+```console
 CONTAINER ID        IMAGE                    COMMAND                  CREATED             STATUS                    PORTS                 NAMES
 b2b855652b3b        mysql/mysql-server:5.7   "/entrypoint.sh --se…"   30 seconds ago      Up 30 seconds (healthy)   3306/tcp, 33060/tcp   slave2
 8a10c0c92350        mysql/mysql-server:5.7   "/entrypoint.sh --se…"   34 seconds ago      Up 32 seconds (healthy)   3306/tcp, 33060/tcp   slave1
@@ -83,14 +83,14 @@ Now we’re ready start our instances and configure replication.
 
 Let's configure in **master node** the replication user and get the initial replication co-ordinates
 
-```
-docker exec -it master mysql -uroot -pmypass \
+```console
+$ docker exec -it master mysql -uroot -pmypass \
   -e "CREATE USER 'repl'@'%' IDENTIFIED BY 'slavepass';" \
   -e "GRANT REPLICATION SLAVE ON *.* TO 'repl'@'%';" \
   -e "SHOW MASTER STATUS;"
 ```
 Output:
-```
+```console
 mysql: [Warning] Using a password on the command line interface can be insecure.
 +--------------------+----------+--------------+------------------+-------------------+
 | File               | Position | Binlog_Do_DB | Binlog_Ignore_DB | Executed_Gtid_Set |
@@ -111,7 +111,7 @@ for N in 1 2
 done
 ```
 Slave1 output:
-```
+```console
 *************************** 1. row ***************************
                Slave_IO_State: Checking master version
                   Master_Host: master
@@ -125,10 +125,10 @@ Slave1 output:
         Relay_Master_Log_File: mysql-bin-1.000003
              Slave_IO_Running: Yes
             Slave_SQL_Running: Yes
-...
+                             ...
 ```
 Slave2 output:
-```
+```console
 *************************** 1. row ***************************
                Slave_IO_State: Checking master version
                   Master_Host: master
@@ -142,16 +142,16 @@ Slave2 output:
         Relay_Master_Log_File: mysql-bin-1.000003
              Slave_IO_Running: Yes
             Slave_SQL_Running: Yes
-...
+                             ...
 ```
 
 Now it's time to test whether data is replicated to slaves.
 We are going to create a new database named "TEST" in master.
-```
-docker exec -it master mysql -uroot -pmypass -e"CREATE DATABASE TEST; USE TEST; SHOW DATABASES;"
+```console
+$ docker exec -it master mysql -uroot -pmypass -e"CREATE DATABASE TEST; USE TEST; SHOW DATABASES;"
 ```
 Output:
-```
+```console
 mysql: [Warning] Using a password on the command line interface can be insecure.
 +--------------------+
 | Database           |
@@ -173,7 +173,7 @@ for N in 1 2
 done
 ```
 Output:
-```
+```console
 mysql: [Warning] Using a password on the command line interface can be insecure.
 +---------------+--------+
 | Variable_name | Value  |
@@ -209,18 +209,18 @@ mysql: [Warning] Using a password on the command line interface can be insecure.
 ## Stopping containers, removing created network and image
 
 #### Stopping running container(s):
-```
-docker stop master slave1 slave2
+```console
+$ docker stop master slave1 slave2
 ```
 #### Removing the data directories created (they are located in the folder were the containers were run):
-```
-sudo rm -rf d0 d1 d2
+```console
+$ sudo rm -rf d0 d1 d2
 ```
 #### Removing the created network:
-```
-docker network rm group1
+```console
+$ docker network rm group1
 ```
 #### Remove the MySQL 8 image:
-```
-docker rmi mysql/mysql-server:8.0
+```console
+$ docker rmi mysql/mysql-server:8.0
 ```
