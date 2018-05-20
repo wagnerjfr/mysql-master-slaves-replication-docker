@@ -45,18 +45,18 @@ $ docker network ls
 
 Run the commands below in a terminal.
 ```console
-$ docker run -d --rm --name=master --net=replicanet --hostname=master \
+docker run -d --rm --name=master --net=replicanet --hostname=master \
   -v $PWD/d0:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=mypass \
   mysql/mysql-server:5.7 \
   --server-id=1 \
   --log-bin='mysql-bin-1.log'
 
-$ docker run -d --rm --name=slave1 --net=replicanet --hostname=slave1 \
+docker run -d --rm --name=slave1 --net=replicanet --hostname=slave1 \
   -v $PWD/d1:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=mypass \
   mysql/mysql-server:5.7 \
   --server-id=2
 
-$ docker run -d --rm --name=slave2 --net=replicanet --hostname=slave2 \
+docker run -d --rm --name=slave2 --net=replicanet --hostname=slave2 \
   -v $PWD/d2:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=mypass \
   mysql/mysql-server:5.7 \
   --server-id=3
