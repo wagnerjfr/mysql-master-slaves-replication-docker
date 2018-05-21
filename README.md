@@ -44,7 +44,7 @@ $ docker network ls
 ## Creating 3 MySQL 8 containers
 
 Run the commands below in a terminal.
-```console
+```
 docker run -d --rm --name=master --net=replicanet --hostname=master \
   -v $PWD/d0:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=mypass \
   mysql/mysql-server:5.7 \
@@ -81,10 +81,34 @@ b2b855652b3b        mysql/mysql-server:5.7   "/entrypoint.sh --se…"   30 secon
 
 Now we’re ready start our instances and configure replication.
 
-Let's configure in **master node** the replication user and get the initial replication co-ordinates
+Let's configure in **master node**.
 
-```console
-$ docker exec -it master mysql -uroot -pmypass \
+[Optional] If you want to use semisynchronous replication:
+```
+docker exec -it master mysql -uroot -pmypass \
+  -e "INSTALL PLUGIN rpl_semi_sync_master SONAME 'semisync_master.so';" \
+  -e "SET GLOBAL rpl_semi_sync_master_enabled = 1;" \
+  -e "SET GLOBAL rpl_semi_sync_master_wait_for_slave_count = 2;" \
+  -e "SHOW VARIABLES LIKE 'rpl_semi_sync%';"
+```
+Semisynchronous setup on master output:
+```
+mysql: [Warning] Using a password on the command line interface can be insecure.
++-------------------------------------------+------------+
+| Variable_name                             | Value      |
++-------------------------------------------+------------+
+| rpl_semi_sync_master_enabled              | ON         |
+| rpl_semi_sync_master_timeout              | 10000      |
+| rpl_semi_sync_master_trace_level          | 32         |
+| rpl_semi_sync_master_wait_for_slave_count | 2          |
+| rpl_semi_sync_master_wait_no_slave        | ON         |
+| rpl_semi_sync_master_wait_point           | AFTER_SYNC |
++-------------------------------------------+------------+
+```
+
+Configuring **master node's** replication user and get the initial replication co-ordinates
+```
+docker exec -it master mysql -uroot -pmypass \
   -e "CREATE USER 'repl'@'%' IDENTIFIED BY 'slavepass';" \
   -e "GRANT REPLICATION SLAVE ON *.* TO 'repl'@'%';" \
   -e "SHOW MASTER STATUS;"
@@ -99,9 +123,37 @@ mysql: [Warning] Using a password on the command line interface can be insecure.
 +--------------------+----------+--------------+------------------+-------------------+
 ```
 
-Let’s continue with the slave instance. Change (if different) the replication co-ordinates captured in the previous step:
-**MASTER_LOG_FILE='mysql-bin-1.000003'**, **MASTER_LOG_POS=595**, before running the below command.
+Let’s continue with the slave nodes.
 
+[Optional] If you want to use semisynchronous replication:
+```
+for N in 1 2
+  do docker exec -it slave$N mysql -uroot -pmypass \
+    -e "INSTALL PLUGIN rpl_semi_sync_slave SONAME 'semisync_slave.so';" \
+    -e "SET GLOBAL rpl_semi_sync_slave_enabled = 1;" \
+    -e "SHOW VARIABLES LIKE 'rpl_semi_sync%';"
+done
+```
+Semisynchronous setup on slaves output:
+```
+mysql: [Warning] Using a password on the command line interface can be insecure.
++---------------------------------+-------+
+| Variable_name                   | Value |
++---------------------------------+-------+
+| rpl_semi_sync_slave_enabled     | ON    |
+| rpl_semi_sync_slave_trace_level | 32    |
++---------------------------------+-------+
+mysql: [Warning] Using a password on the command line interface can be insecure.
++---------------------------------+-------+
+| Variable_name                   | Value |
++---------------------------------+-------+
+| rpl_semi_sync_slave_enabled     | ON    |
+| rpl_semi_sync_slave_trace_level | 32    |
++---------------------------------+-------+
+```
+
+Change (if different) the replication co-ordinates captured in the previous step:
+**MASTER_LOG_FILE='mysql-bin-1.000003'**, **MASTER_LOG_POS=595**, before running the below command.
 ```
 for N in 1 2
   do docker exec -it slave$N mysql -uroot -pmypass \
@@ -148,8 +200,8 @@ Slave2 output:
 
 Now it's time to test whether data is replicated to slaves.
 We are going to create a new database named "TEST" in master.
-```console
-$ docker exec -it master mysql -uroot -pmypass -e "CREATE DATABASE TEST; SHOW DATABASES;"
+```
+docker exec -it master mysql -uroot -pmypass -e "CREATE DATABASE TEST; SHOW DATABASES;"
 ```
 Output:
 ```console
@@ -221,7 +273,7 @@ $ sudo rm -rf d0 d1 d2
 ```console
 $ docker network rm replicanet
 ```
-#### Remove the MySQL 8 image:
+#### Removing MySQL image:
 ```console
 $ docker rmi mysql/mysql-server:5.7
 ```
