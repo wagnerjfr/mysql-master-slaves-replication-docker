@@ -148,7 +148,7 @@ Slave2 output:
 Now it's time to test whether data is replicated to slaves.
 We are going to create a new database named "TEST" in master.
 ```console
-$ docker exec -it master mysql -uroot -pmypass -e"CREATE DATABASE TEST; USE TEST; SHOW DATABASES;"
+$ docker exec -it master mysql -uroot -pmypass -e"CREATE DATABASE TEST; SHOW DATABASES;"
 ```
 Output:
 ```console
