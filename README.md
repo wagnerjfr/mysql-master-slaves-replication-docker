@@ -218,9 +218,9 @@ $ sudo rm -rf d0 d1 d2
 ```
 #### Removing the created network:
 ```console
-$ docker network rm group1
+$ docker network rm replicanet
 ```
 #### Remove the MySQL 8 image:
 ```console
-$ docker rmi mysql/mysql-server:8.0
+$ docker rmi mysql/mysql-server:5.7
 ```
