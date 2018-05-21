@@ -107,7 +107,8 @@ for N in 1 2
   do docker exec -it slave$N mysql -uroot -pmypass \
     -e "CHANGE MASTER TO MASTER_HOST='master', MASTER_USER='repl', \
       MASTER_PASSWORD='slavepass', MASTER_LOG_FILE='mysql-bin-1.000003', MASTER_LOG_POS=595;"
-  docker exec -it slave$N mysql -uroot -pmypass -e"START SLAVE;" -e"SHOW SLAVE STATUS\G"
+
+  docker exec -it slave$N mysql -uroot -pmypass -e"START SLAVE;" -e "SHOW SLAVE STATUS\G"
 done
 ```
 Slave1 output:
@@ -148,7 +149,7 @@ Slave2 output:
 Now it's time to test whether data is replicated to slaves.
 We are going to create a new database named "TEST" in master.
 ```console
-$ docker exec -it master mysql -uroot -pmypass -e"CREATE DATABASE TEST; SHOW DATABASES;"
+$ docker exec -it master mysql -uroot -pmypass -e "CREATE DATABASE TEST; SHOW DATABASES;"
 ```
 Output:
 ```console
