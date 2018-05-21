@@ -29,7 +29,7 @@ docker pull mysql/mysql-server
 docker pull mysql/mysql-server:5.7
 docker pull mysql/mysql-server:8.0
 ```
-In this example, we are going to use ***mysql/mysql-server:8.0***
+In this example, we are going to use ***mysql/mysql-server:5.7***
 
 ## Creating a Docker network
 ```console
