@@ -18,8 +18,8 @@ We start by creating a Docker network named **replicanet**, then we are going to
 ## Pull MySQL Sever Image
 
 To download the MySQL Community Edition image, the command is:
-```console
-$ docker pull mysql/mysql-server:tag
+```
+docker pull mysql/mysql-server:tag
 ```
 If :tag is omitted, the latest tag is used, and the image for the latest GA version of MySQL Server is downloaded.
 
@@ -32,14 +32,14 @@ docker pull mysql/mysql-server:8.0
 In this example, we are going to use ***mysql/mysql-server:5.7***
 
 ## Creating a Docker network
-```console
-$ docker network create replicanet
+```
+docker network create replicanet
 ```
 Just need to create it once, unless you remove it from docker network.
 
 To see all Docker Network:
-```console
-$ docker network ls
+```
+docker network ls
 ```
 ## Creating 3 MySQL 8 containers
 
@@ -62,8 +62,8 @@ docker run -d --rm --name=slave2 --net=replicanet --hostname=slave2 \
   --server-id=3
 ```
 It's possible to see whether the containers are started by running:
-```console
-$ docker ps -a
+```
+docker ps -a
 ```
 ```console
 CONTAINER ID        IMAGE                    COMMAND                  CREATED             STATUS                            PORTS                 NAMES
@@ -83,7 +83,7 @@ Now we’re ready start our instances and configure replication.
 
 Let's configure in **master node**.
 
-[Optional] If you want to use semisynchronous replication:
+*[Optional] If you want to use semisynchronous replication:*
 ```
 docker exec -it master mysql -uroot -pmypass \
   -e "INSTALL PLUGIN rpl_semi_sync_master SONAME 'semisync_master.so';" \
@@ -91,8 +91,8 @@ docker exec -it master mysql -uroot -pmypass \
   -e "SET GLOBAL rpl_semi_sync_master_wait_for_slave_count = 2;" \
   -e "SHOW VARIABLES LIKE 'rpl_semi_sync%';"
 ```
-Semisynchronous setup on master output:
-```
+*[Optional] Semisynchronous setup on master output:*
+```console
 mysql: [Warning] Using a password on the command line interface can be insecure.
 +-------------------------------------------+------------+
 | Variable_name                             | Value      |
@@ -125,7 +125,7 @@ mysql: [Warning] Using a password on the command line interface can be insecure.
 
 Let’s continue with the slave nodes.
 
-[Optional] If you want to use semisynchronous replication:
+*[Optional] If you want to use semisynchronous replication:*
 ```
 for N in 1 2
   do docker exec -it slave$N mysql -uroot -pmypass \
@@ -134,8 +134,8 @@ for N in 1 2
     -e "SHOW VARIABLES LIKE 'rpl_semi_sync%';"
 done
 ```
-Semisynchronous setup on slaves output:
-```
+*[Optional] Semisynchronous setup on slaves output:*
+```console
 mysql: [Warning] Using a password on the command line interface can be insecure.
 +---------------------------------+-------+
 | Variable_name                   | Value |
@@ -153,7 +153,10 @@ mysql: [Warning] Using a password on the command line interface can be insecure.
 ```
 
 Change (if different) the replication co-ordinates captured in the previous step:
-**MASTER_LOG_FILE='mysql-bin-1.000003'**, **MASTER_LOG_POS=595**, before running the below command.
+* **MASTER_LOG_FILE='mysql-bin-1.000003'**
+* **MASTER_LOG_POS=595**
+
+, before running the below command.
 ```
 for N in 1 2
   do docker exec -it slave$N mysql -uroot -pmypass \
