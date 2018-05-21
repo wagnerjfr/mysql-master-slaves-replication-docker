@@ -13,7 +13,7 @@ https://dev.mysql.com/doc/refman/8.0/en/replication.html
 
 ## Overview
 
-We start by creating a Docker network named **replicanet**, then we are going to pull **mysql 8** from Docker Hub (https://hub.docker.com/r/mysql/mysql-server/) and create a replication topology with 3 nodes (1 master and 2 slaves) in different hosts.
+We start by creating a Docker network named **replicanet**, then we are going to pull **mysql 5.7** from Docker Hub (https://hub.docker.com/r/mysql/mysql-server/) and create a replication topology with 3 nodes (1 master and 2 slaves) in different hosts.
 
 ## Pull MySQL Sever Image
 
