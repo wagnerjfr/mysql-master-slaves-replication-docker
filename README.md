@@ -152,19 +152,22 @@ mysql: [Warning] Using a password on the command line interface can be insecure.
 +---------------------------------+-------+
 ```
 
-Change (if different) the replication co-ordinates captured in the previous step:
+Change (if different) the replication co-ordinate captured in the previous step:
 * **MASTER_LOG_FILE='mysql-bin-1.000003'**
-* **MASTER_LOG_POS=595**
 
 , before running the below command.
 ```
 for N in 1 2
   do docker exec -it slave$N mysql -uroot -pmypass \
     -e "CHANGE MASTER TO MASTER_HOST='master', MASTER_USER='repl', \
-      MASTER_PASSWORD='slavepass', MASTER_LOG_FILE='mysql-bin-1.000003', MASTER_LOG_POS=595;"
+      MASTER_PASSWORD='slavepass', MASTER_LOG_FILE='mysql-bin-1.000003';"
 
-  docker exec -it slave$N mysql -uroot -pmypass -e"START SLAVE;" -e "SHOW SLAVE STATUS\G"
+  docker exec -it slave$N mysql -uroot -pmypass -e "START SLAVE;"
 done
+```
+Checking slave replication staus in slave1:
+```
+docker exec -it slave1 mysql -uroot -pmypass -e "SHOW SLAVE STATUS\G"
 ```
 Slave1 output:
 ```console
@@ -182,6 +185,10 @@ Slave1 output:
              Slave_IO_Running: Yes
             Slave_SQL_Running: Yes
                              ...
+```
+Checking slave replication staus in slave2:
+```
+docker exec -it slave2 mysql -uroot -pmypass -e "SHOW SLAVE STATUS\G"
 ```
 Slave2 output:
 ```console
