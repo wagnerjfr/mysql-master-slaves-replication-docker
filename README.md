@@ -41,7 +41,7 @@ To see all Docker Network:
 ```
 docker network ls
 ```
-## Creating 3 MySQL 8 containers
+## Creating 3 MySQL containers
 
 Run the commands below in a terminal.
 ```
