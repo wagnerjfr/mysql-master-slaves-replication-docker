@@ -32,12 +32,13 @@ docker pull mysql/mysql-server:8.0
 In this example, we are going to use ***mysql/mysql-server:5.7***
 
 ## Creating a Docker network
+Fire the following command to create a network:
 ```
 docker network create replicanet
 ```
-Just need to create it once, unless you remove it from docker network.
+You just need to create it once, unless you remove it from Docker.
 
-To see all Docker Network:
+To see all Docker networks:
 ```
 docker network ls
 ```
