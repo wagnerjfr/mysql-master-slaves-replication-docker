@@ -82,7 +82,7 @@ b2b855652b3b        mysql/mysql-server:5.7   "/entrypoint.sh --se…"   30 secon
 
 Now we’re ready start our instances and configure replication.
 
-Let's configure in **master node**.
+Let's configure the **master node**.
 
 *[Optional] If you want to use semisynchronous replication:*
 ```
