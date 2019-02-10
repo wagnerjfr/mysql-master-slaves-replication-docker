@@ -6,11 +6,6 @@ Setting up MySQL Replication M->S1 and M->S2 with Docker MySQL images
 ## References
 https://dev.mysql.com/doc/refman/8.0/en/replication.html
 
-## Prerequisites
-
-1. Docker installed
-2. Do not run while connected to VPN
-
 ## Overview
 
 We start by creating a Docker network named **replicanet**, then we are going to pull **mysql 5.7** from Docker Hub (https://hub.docker.com/r/mysql/mysql-server/) and create a replication topology with 3 nodes (1 master and 2 slaves) in different hosts.
