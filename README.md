@@ -269,7 +269,7 @@ mysql: [Warning] Using a password on the command line interface can be insecure.
 +--------------------+
 ```
 
-## Stopping containers, removing created network and image
+## 7. Stopping containers, removing created network and image
 
 #### Stopping running container(s):
 ```
