@@ -161,7 +161,7 @@ for N in 1 2
   docker exec -it slave$N mysql -uroot -pmypass -e "START SLAVE;"
 done
 ```
-Checking slave replication staus in slave1:
+Checking slave replication status in slave1:
 ```
 docker exec -it slave1 mysql -uroot -pmypass -e "SHOW SLAVE STATUS\G"
 ```
@@ -182,7 +182,7 @@ Slave1 output:
             Slave_SQL_Running: Yes
                              ...
 ```
-Checking slave replication staus in slave2:
+Checking slave replication status in slave2:
 ```
 docker exec -it slave2 mysql -uroot -pmypass -e "SHOW SLAVE STATUS\G"
 ```
