@@ -78,7 +78,7 @@ b2b855652b3b        mysql/mysql-server:5.7   "/entrypoint.sh --se…"   30 secon
 Now we’re ready start our instances and configure replication.
 
 ## 5. Configuring master and slaves
-### 5.1 Master
+### 5.1. Master
 
 Let's configure the **master node**.
 
@@ -121,7 +121,7 @@ mysql: [Warning] Using a password on the command line interface can be insecure.
 | mysql-bin-1.000003 |      595 |              |                  |                   |
 +--------------------+----------+--------------+------------------+-------------------+
 ```
-### 5.2 Slaves
+### 5.2. Slaves
 Let’s continue with the **slave nodes**.
 
 *[Optional] If you want to use semisynchronous replication:*
