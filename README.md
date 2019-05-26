@@ -6,11 +6,11 @@ Setting up MySQL Replication M->S1 and M->S2 with Docker MySQL images
 ## References
 https://dev.mysql.com/doc/refman/8.0/en/replication.html
 
-## Overview
+## 1. Overview
 
 We start by creating a Docker network named **replicanet**, then we are going to pull **mysql 5.7** from Docker Hub (https://hub.docker.com/r/mysql/mysql-server/) and create a replication topology with 3 nodes (1 master and 2 slaves) in different hosts.
 
-## Pull MySQL Sever Image
+## 2. Pull MySQL Sever Image
 
 To download the MySQL Community Edition image, the command is:
 ```
@@ -26,7 +26,7 @@ docker pull mysql/mysql-server:8.0
 ```
 In this example, we are going to use ***mysql/mysql-server:5.7***
 
-## Creating a Docker network
+## 3. Creating a Docker network
 Fire the following command to create a network:
 ```
 docker network create replicanet
@@ -37,7 +37,7 @@ To see all Docker networks:
 ```
 docker network ls
 ```
-## Creating 3 MySQL containers
+## 4. Creating 3 MySQL containers
 
 Run the commands below in a terminal.
 ```
@@ -77,6 +77,9 @@ b2b855652b3b        mysql/mysql-server:5.7   "/entrypoint.sh --se…"   30 secon
 
 Now we’re ready start our instances and configure replication.
 
+## 5. Configuring master and slaves
+### 5.1 Master
+
 Let's configure the **master node**.
 
 *[Optional] If you want to use semisynchronous replication:*
@@ -102,7 +105,7 @@ mysql: [Warning] Using a password on the command line interface can be insecure.
 +-------------------------------------------+------------+
 ```
 
-Configuring **master node's** replication user and get the initial replication co-ordinates
+Configuring **master node** replication user and get the initial replication co-ordinates
 ```
 docker exec -it master mysql -uroot -pmypass \
   -e "CREATE USER 'repl'@'%' IDENTIFIED BY 'slavepass';" \
@@ -118,8 +121,8 @@ mysql: [Warning] Using a password on the command line interface can be insecure.
 | mysql-bin-1.000003 |      595 |              |                  |                   |
 +--------------------+----------+--------------+------------------+-------------------+
 ```
-
-Let’s continue with the slave nodes.
+### 5.2 Slaves
+Let’s continue with the **slave nodes**.
 
 *[Optional] If you want to use semisynchronous replication:*
 ```
@@ -161,7 +164,7 @@ for N in 1 2
   docker exec -it slave$N mysql -uroot -pmypass -e "START SLAVE;"
 done
 ```
-Checking slave replication status in slave1:
+Checking slave replication status on **slave1**:
 ```
 docker exec -it slave1 mysql -uroot -pmypass -e "SHOW SLAVE STATUS\G"
 ```
@@ -182,7 +185,7 @@ Slave1 output:
             Slave_SQL_Running: Yes
                              ...
 ```
-Checking slave replication status in slave2:
+Checking slave replication status on **slave2**:
 ```
 docker exec -it slave2 mysql -uroot -pmypass -e "SHOW SLAVE STATUS\G"
 ```
@@ -203,6 +206,7 @@ Slave2 output:
             Slave_SQL_Running: Yes
                              ...
 ```
+## 6. Inserting some data
 
 Now it's time to test whether data is replicated to slaves.
 We are going to create a new database named "TEST" in master.
