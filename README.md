@@ -29,13 +29,13 @@ In this example, we are going to use ***mysql/mysql-server:5.7***
 ## 3. Creating a Docker network
 Fire the following command to create a network:
 ```
-docker network create replicanet
+$ docker network create replicanet
 ```
 You just need to create it once, unless you remove it from Docker.
 
 To see all Docker networks:
 ```
-docker network ls
+$ docker network ls
 ```
 ## 4. Creating 3 MySQL containers
 
@@ -59,7 +59,7 @@ docker run -d --rm --name=slave2 --net=replicanet --hostname=slave2 \
 ```
 It's possible to see whether the containers are started by running:
 ```
-docker ps -a
+$ docker ps -a
 ```
 ```console
 CONTAINER ID        IMAGE                    COMMAND                  CREATED             STATUS                            PORTS                 NAMES
@@ -166,7 +166,7 @@ done
 ```
 Checking slave replication status on **slave1**:
 ```
-docker exec -it slave1 mysql -uroot -pmypass -e "SHOW SLAVE STATUS\G"
+$ docker exec -it slave1 mysql -uroot -pmypass -e "SHOW SLAVE STATUS\G"
 ```
 Slave1 output:
 ```console
@@ -187,7 +187,7 @@ Slave1 output:
 ```
 Checking slave replication status on **slave2**:
 ```
-docker exec -it slave2 mysql -uroot -pmypass -e "SHOW SLAVE STATUS\G"
+$ docker exec -it slave2 mysql -uroot -pmypass -e "SHOW SLAVE STATUS\G"
 ```
 Slave2 output:
 ```console
@@ -211,7 +211,7 @@ Slave2 output:
 Now it's time to test whether data is replicated to slaves.
 We are going to create a new database named "TEST" in master.
 ```
-docker exec -it master mysql -uroot -pmypass -e "CREATE DATABASE TEST; SHOW DATABASES;"
+$ docker exec -it master mysql -uroot -pmypass -e "CREATE DATABASE TEST; SHOW DATABASES;"
 ```
 Output:
 ```console
@@ -273,17 +273,17 @@ mysql: [Warning] Using a password on the command line interface can be insecure.
 
 #### Stopping running container(s):
 ```
-docker stop master slave1 slave2
+$ docker stop master slave1 slave2
 ```
 #### Removing the data directories created (they are located in the folder were the containers were run):
 ```
-sudo rm -rf d0 d1 d2
+$ sudo rm -rf d0 d1 d2
 ```
 #### Removing the created network:
 ```
-docker network rm replicanet
+$ docker network rm replicanet
 ```
 #### Removing MySQL image:
 ```
-docker rmi mysql/mysql-server:5.7
+$ docker rmi mysql/mysql-server:5.7
 ```
