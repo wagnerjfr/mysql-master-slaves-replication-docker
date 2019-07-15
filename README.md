@@ -1,5 +1,5 @@
 # Replication with Docker MySQL Images
-Setting up MySQL Replication M->S1 and M->S2 with Docker MySQL images
+Setting up MySQL Replication M➡S1 and M➡S2 with Docker MySQL images
 
 #### Replication enables data from one MySQL database server (the master) to be copied to one or more MySQL database servers (the slaves).
 
