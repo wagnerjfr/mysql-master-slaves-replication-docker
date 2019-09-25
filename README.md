@@ -16,7 +16,7 @@ To download the MySQL Community Edition image, the command is:
 ```
 docker pull mysql/mysql-server:tag
 ```
-If :tag is omitted, the latest tag is used, and the image for the latest GA version of MySQL Server is downloaded.
+If `:tag` is omitted, the latest tag is used, and the image for the latest GA version of MySQL Server is downloaded.
 
 Examples:
 ```
