@@ -4,7 +4,8 @@ Setting up MySQL Replication M➡S1 and M➡S2 with Docker MySQL images
 #### Replication enables data from one MySQL database server (the master) to be copied to one or more MySQL database servers (the slaves).
 
 ## References
-https://dev.mysql.com/doc/refman/8.0/en/replication.html
+- https://dev.mysql.com/doc/refman/8.0/en/replication.html
+- https://github.com/wagnerjfr/docker-machine-master-slave-mysql-replication
 
 ## 1. Overview
 
