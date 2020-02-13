@@ -13,7 +13,7 @@ We start by creating a Docker network named **replicanet**, then we are going to
 
 ## 2. Pull MySQL Sever Image
 
-To download the MySQL Community Edition image, the command is:
+To download the *MySQL Community Edition image*, the command is:
 ```
 docker pull mysql/mysql-server:tag
 ```
