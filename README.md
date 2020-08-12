@@ -270,21 +270,21 @@ mysql: [Warning] Using a password on the command line interface can be insecure.
 +--------------------+
 ```
 
-## 7. Stopping containers, removing created network and image
+## 7. Cleaning up: stopping containers, removing created network and image
 
-#### Stopping running container(s):
+#### To stop the running container(s):
 ```
 $ docker stop master slave1 slave2
 ```
-#### Removing the data directories created (they are located in the folder were the containers were run):
+#### To remove the data directories created (they are located in the folder were the containers were run):
 ```
 $ sudo rm -rf d0 d1 d2
 ```
-#### Removing the created network:
+#### To remove the created network:
 ```
 $ docker network rm replicanet
 ```
-#### Removing MySQL image:
+#### To remove MySQL image:
 ```
 $ docker rmi mysql/mysql-server:5.7
 ```
