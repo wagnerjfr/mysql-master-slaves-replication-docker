@@ -272,7 +272,7 @@ mysql: [Warning] Using a password on the command line interface can be insecure.
 
 ## 7. Cleaning up: stopping containers, removing created network and image
 
-#### To stop the running container(s):
+#### To stop the running containers:
 ```
 $ docker stop master slave1 slave2
 ```
